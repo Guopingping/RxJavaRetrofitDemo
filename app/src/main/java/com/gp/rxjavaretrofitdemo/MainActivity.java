@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gp.rxjavaretrofitdemo.entity.MovieEntity;
 
@@ -16,6 +17,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,18 +51,24 @@ public class MainActivity extends AppCompatActivity {
 
         MovieService movieService = retrofit.create(MovieService.class);
 
-        Call<MovieEntity> call = movieService.getTopMovie(0,10);
+        movieService.getTopMovie(0, 10)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<MovieEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
+                    }
 
-        call.enqueue(new Callback<MovieEntity>() {
-            @Override
-            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-                resultTV.setText(response.body().toString());
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        resultTV.setText(e.getMessage());
+                    }
 
-            @Override
-            public void onFailure(Call<MovieEntity> call, Throwable t) {
-                resultTV.setText(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onNext(MovieEntity movieEntity) {
+                        resultTV.setText(movieEntity.toString());
+                    }
+                });
     }
 }
