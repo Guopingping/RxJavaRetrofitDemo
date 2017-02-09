@@ -1,4 +1,4 @@
-package com.gp.rxjavaretrofitdemo;
+package com.gp.rxjavaretrofitdemo.http;
 
 import com.gp.rxjavaretrofitdemo.entity.MovieEntity;
 
