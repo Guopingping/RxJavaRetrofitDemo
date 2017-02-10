@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 //    private Subscriber subscriber;
 
     private SubscriberOnNextListener getTopMovieOnNext;
+    private SubscriberOnNextListener getTopMovieNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,14 @@ public class MainActivity extends AppCompatActivity {
 //        };
 //        HttpMethods.getInstance().getTopMovie(subscriber,0,10);
 
-        HttpMethods.getInstance().getTopMovie(new ProgressSubscriber<List<Subject>>(getTopMovieOnNext,MainActivity.this),
-        0,10);
+
+
+//        HttpMethods.getInstance().getTopMovie(new ProgressSubscriber<List<Subject>>(getTopMovieOnNext,MainActivity.this), 0,10);
+
+
+        HttpMethods.getInstance().getTopMovie(
+                new ProgressSubscriber(getTopMovieOnNext,MainActivity.this),
+                0,10
+        );
     }
 }
