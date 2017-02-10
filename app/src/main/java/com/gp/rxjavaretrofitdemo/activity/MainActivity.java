@@ -7,19 +7,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gp.rxjavaretrofitdemo.R;
-import com.gp.rxjavaretrofitdemo.entity.MovieEntity;
+import com.gp.rxjavaretrofitdemo.entity.HttpResult;
+import com.gp.rxjavaretrofitdemo.entity.Subject;
 import com.gp.rxjavaretrofitdemo.http.HttpMethods;
-import com.gp.rxjavaretrofitdemo.http.MovieService;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
 
-        subscriber = new Subscriber<MovieEntity>(){
+        subscriber = new Subscriber<HttpResult<List<Subject>>>(){
 
             @Override
             public void onCompleted() {
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(MovieEntity movieEntity) {
+            public void onNext(HttpResult<List<Subject>> movieEntity) {
                 resultTV.setText(movieEntity.toString());
             }
         };
