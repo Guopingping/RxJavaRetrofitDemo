@@ -5,6 +5,7 @@ package com.gp.rxjavaretrofitdemo.entity;
  */
 
 public class HttpResult<T> {
+    //用来模仿resultCode和resultMessage
     private int count;
     private int start;
     private int total;

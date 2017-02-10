@@ -10,6 +10,8 @@ import com.gp.rxjavaretrofitdemo.R;
 import com.gp.rxjavaretrofitdemo.entity.HttpResult;
 import com.gp.rxjavaretrofitdemo.entity.Subject;
 import com.gp.rxjavaretrofitdemo.http.HttpMethods;
+import com.gp.rxjavaretrofitdemo.subscribers.ProgressSubscriber;
+import com.gp.rxjavaretrofitdemo.subscribers.SubscriberOnNextListener;
 
 import java.util.List;
 
@@ -25,13 +27,32 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.result_TV)
     TextView resultTV;
 
-    private Subscriber subscriber;
+//    private Subscriber subscriber;
+
+    private SubscriberOnNextListener getTopMovieOnNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        getTopMovieOnNext = new SubscriberOnNextListener<List<Subject>>() {
+            @Override
+            public void onNext(List<Subject> subjects) {
+                resultTV.setText(subjects.toString());
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @OnClick(R.id.click_me_BN)
@@ -39,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         getMovie();
     }
 
+    //进行网络请求
     public void getMovie(){
 //        String baseUrl = "https://api.douban.com/v2/movie/";
 //
@@ -70,23 +92,28 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
 
-        subscriber = new Subscriber<HttpResult<List<Subject>>>(){
 
-            @Override
-            public void onCompleted() {
-                Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                resultTV.setText(e.getMessage());
-            }
+//        subscriber = new Subscriber<HttpResult<List<Subject>>>(){
+//
+//            @Override
+//            public void onCompleted() {
+//                Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                resultTV.setText(e.getMessage());
+//            }
+//
+//            @Override
+//            public void onNext(HttpResult<List<Subject>> movieEntity) {
+//                resultTV.setText(movieEntity.toString());
+//            }
+//        };
+//        HttpMethods.getInstance().getTopMovie(subscriber,0,10);
 
-            @Override
-            public void onNext(HttpResult<List<Subject>> movieEntity) {
-                resultTV.setText(movieEntity.toString());
-            }
-        };
-        HttpMethods.getInstance().getTopMovie(subscriber,0,10);
+        HttpMethods.getInstance().getTopMovie(new ProgressSubscriber<List<Subject>>(getTopMovieOnNext,MainActivity.this),
+        0,10);
     }
 }
