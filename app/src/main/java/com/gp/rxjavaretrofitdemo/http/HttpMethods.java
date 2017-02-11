@@ -74,11 +74,11 @@ public class HttpMethods {
     private class HttpResultFunc<T> implements Func1<HttpResult<T>,T>{
 
         @Override
-        public T call(HttpResult<T> tHttpResult) {
-            if(tHttpResult.getCount() == 0){
+        public T call(HttpResult<T> httpResult) {
+            if(httpResult.getCount() == 0){
                 throw new ApiException(100);
             }
-            return tHttpResult.getSubjects();
+            return httpResult.getSubjects();
         }
     }
 }
